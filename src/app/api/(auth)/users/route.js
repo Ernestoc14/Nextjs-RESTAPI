@@ -14,4 +14,19 @@ export const GET = async () => {
   }
 };
 
-
+export const POST = async () => {
+  try {
+    await connectDB();
+    const user = new User({
+      email: "email@hotmail.com",
+      username: "username",
+      password: "password",
+    });
+    await user.save();
+    return new NextResponse(JSON.stringify(user), { status: 201 });
+  } catch (error) {
+    return new NextResponse("Error in creating user " + error.message, {
+      status: 500,
+    });
+  }
+};
