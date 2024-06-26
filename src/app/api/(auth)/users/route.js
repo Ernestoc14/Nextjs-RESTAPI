@@ -14,16 +14,16 @@ export const GET = async () => {
   }
 };
 
-export const POST = async () => {
+export const POST = async (request) => {
   try {
+    const body = await request.json();
     await connectDB();
-    const user = new User({
-      email: "email@hotmail.com",
-      username: "username",
-      password: "password",
-    });
-    await user.save();
-    return new NextResponse(JSON.stringify(user), { status: 201 });
+    const newUser = new User(body);
+    await newUser.save();
+    return new NextResponse(
+      JSON.stringify({ message: "User has been created", User: newUser }),
+      { status: 200 }
+    );
   } catch (error) {
     return new NextResponse("Error in creating user " + error.message, {
       status: 500,
@@ -33,7 +33,6 @@ export const POST = async () => {
 
 export const PATCH = async () => {
   try {
-    
   } catch (error) {
     return new NextResponse("Error in Patch " + error.message, { status: 500 });
   }
