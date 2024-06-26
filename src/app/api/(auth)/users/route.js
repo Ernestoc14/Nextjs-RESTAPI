@@ -30,3 +30,11 @@ export const POST = async () => {
     });
   }
 };
+
+export const PATCH = async () => {
+  try {
+    
+  } catch (error) {
+    return new NextResponse("Error in Patch " + error.message, { status: 500 });
+  }
+};
