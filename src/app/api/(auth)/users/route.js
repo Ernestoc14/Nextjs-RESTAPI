@@ -5,6 +5,7 @@ import { Types } from "mongoose";
 
 const ObjectId = require("mongoose").Types.ObjectId;
 
+// Get all users
 export const GET = async () => {
   try {
     await connectDB();
@@ -17,6 +18,7 @@ export const GET = async () => {
   }
 };
 
+// Create a new user
 export const POST = async (request) => {
   try {
     const body = await request.json();
@@ -34,6 +36,7 @@ export const POST = async (request) => {
   }
 };
 
+// Update a user
 export const PATCH = async (request) => {
   try {
     const body = await request.json();
@@ -74,6 +77,45 @@ export const PATCH = async (request) => {
   } catch (error) {
     return new NextResponse(
       JSON.stringify("Error in Patch " + error.message, { status: 500 })
+    );
+  }
+};
+
+// Delete a user
+export const DELETE = async (request) => {
+  try {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get("userId");
+
+    if (!userId) {
+      return new NextResponse(
+        JSON.stringify({ message: "User not found" }, { status: 400 })
+      );
+    }
+    if (!Types.ObjectId.isValid(userId)) {
+      return new NextResponse(
+        JSON.stringify({ message: "Invalid User ID" }, { status: 400 })
+      );
+    }
+    await connectDB();
+
+    const deletedUser = await User.findOneAndDelete(new Types.ObjectId(userId));
+    if (!deletedUser) {
+      return new NextResponse(
+        JSON.stringify({ message: "User not found" }, { status: 404 })
+      );
+    }
+
+    return new NextResponse(
+      JSON.stringify(
+        { message: "User has been deleted", User: deletedUser },
+        { status: 200 }
+      )
+    );
+  } catch (error) {
+    return new NextResponse(
+      JSON.stringify("Error deliting a user" + error.message),
+      { status: 500 }
     );
   }
 };
